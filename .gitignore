@@ -1,0 +1,7 @@
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Server
+server.ps1
