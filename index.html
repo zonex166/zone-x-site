@@ -2517,10 +2517,17 @@ function sendOrderEmail(orderData) {
         from_name: orderData.nom+' '+orderData.prenom,
         orders: orders,
         cost: {shipping:'0',tax:'0',total:total.toLocaleString()},
-        email: orderData.email||'jspkite10@gmail.com'
-      }, EMAILJS_CONFIG.PUBLIC_KEY)
+        email: orderData.email||'Non fourni',
+        to_email: 'jspkite10@gmail.com',
+        telephone: orderData.telephone,
+        ville: orderData.ville,
+        quartier: orderData.quartier,
+        adresse: orderData.adresse,
+        paiement: orderData.paiement,
+        notes: orderData.notes||'Aucune'
+      })
       .then(function(){showToast('Commande envoyée par email');resolve(true);})
-      .catch(function(){fallbackEmail(orderData,total);resolve(false);});
+      .catch(function(e){console.error('EmailJS error:',e);fallbackEmail(orderData,total);resolve(false);});
     } else {
       fallbackEmail(orderData,total);
       resolve(false);

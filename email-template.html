@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0a0a0a; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: #111; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+    .header { background: #d4263a; padding: 30px; text-align: center; }
+    .header h1 { color: #fff; font-size: 28px; letter-spacing: 3px; text-transform: uppercase; }
+    .header p { color: rgba(255,255,255,0.7); margin-top: 5px; font-size: 13px; }
+    .body { padding: 30px; }
+    .section-title { color: #fff; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #333; text-transform: uppercase; letter-spacing: 1px; }
+    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
+    .info-table td { padding: 6px 0; font-size: 13px; }
+    .info-table .label { color: #888; width: 120px; }
+    .info-table .value { color: #fff; }
+    .order-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .order-table thead th { background: #1a1a1a; padding: 10px; text-align: left; color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+    .order-table thead th.right { text-align: right; }
+    .order-table thead th.center { text-align: center; }
+    .order-table tbody td { padding: 10px; border-bottom: 1px solid #222; font-size: 13px; }
+    .order-table tbody td.name { color: #ccc; }
+    .order-table tbody td.center { text-align: center; color: #ccc; }
+    .order-table tbody td.right { text-align: right; color: #ffd700; font-weight: 600; }
+    .order-table tfoot td { padding: 12px 10px; font-size: 15px; border: none; }
+    .order-table tfoot td.label { text-align: right; color: #aaa; }
+    .order-table tfoot td.amount { text-align: right; color: #ffd700; font-weight: 700; }
+    .order-table tfoot td.total-label { text-align: right; color: #fff; font-size: 17px; font-weight: 700; }
+    .order-table tfoot td.total-amount { text-align: right; color: #ffd700; font-size: 17px; font-weight: 700; }
+    .divider { border: none; border-top: 1px solid #333; margin: 20px 0; }
+    .info-client { margin-bottom: 25px; }
+    .info-client p { color: #888; font-size: 13px; line-height: 1.8; }
+    .info-client strong { color: #ccc; }
+    .footer { background: #0a0a0a; padding: 20px 30px; text-align: center; border-top: 1px solid #222; }
+    .footer p { color: #555; font-size: 12px; }
+    .badge { display: inline-block; background: rgba(212,38,58,0.15); color: #e8495b; padding: 4px 12px; border-radius: 20px; font-size: 11px; letter-spacing: 1px; margin-bottom: 15px; }
+    .total-highlight { background: rgba(212,38,58,0.05); border-radius: 8px; padding: 5px 0; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>ZONE X</h1>
+      <p>Boutique Érotique Premium</p>
+    </div>
+    <div class="body">
+      <div style="text-align:center;margin-bottom:20px">
+        <div class="badge">&#10003; NOUVELLE COMMANDE</div>
+        <div style="color:#ffd700;font-size:24px;font-weight:700;letter-spacing:2px">#{{order_id}}</div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-title">Client</div>
+      <div class="info-client">
+        <p><strong>Nom :</strong> {{from_name}}</p>
+        <p><strong>Téléphone :</strong> {{telephone}}</p>
+        <p><strong>Email :</strong> {{email}}</p>
+        <p><strong>Ville :</strong> {{ville}}</p>
+        <p><strong>Quartier :</strong> {{quartier}}</p>
+        <p><strong>Adresse :</strong> {{adresse}}</p>
+        <p><strong>Paiement :</strong> {{paiement}}</p>
+        <p><strong>Notes :</strong> {{notes}}</p>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-title">Articles commandés</div>
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th class="center">Qté</th>
+            <th class="right">Prix unitaire</th>
+            <th class="right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#orders}}
+          <tr>
+            <td class="name">{{name}}</td>
+            <td class="center">{{units}}</td>
+            <td class="right">{{price}} FCFA</td>
+            <td class="right">{{total}} FCFA</td>
+          </tr>
+          {{/orders}}
+        </tbody>
+      </table>
+
+      <div class="total-highlight">
+        <table class="order-table">
+          <tfoot>
+            <tr>
+              <td colspan="3" class="total-label">TOTAL GÉNÉRAL</td>
+              <td class="total-amount">{{cost.total}} FCFA</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <hr class="divider">
+
+      <div style="text-align:center;margin-top:15px">
+        <p style="color:#555;font-size:12px;line-height:1.8">
+          Zone X &middot; Yaoundé, Cameroun<br>
+          Contact: jspkite10@gmail.com &middot; WhatsApp: +237 622 395 039
+        </p>
+        <p style="color:#444;font-size:11px;margin-top:10px">
+          Cet email a été envoyé automatiquement suite à une commande sur le site Zone X.
+        </p>
+      </div>
+    </div>
+    <div class="footer">
+      <p>&copy; 2026 Zone X &mdash; Tous droits réservés</p>
+    </div>
+  </div>
+</body>
+</html>
