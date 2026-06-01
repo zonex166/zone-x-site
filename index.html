@@ -2527,7 +2527,7 @@ function sendOrderEmail(orderData) {
         notes: orderData.notes||'Aucune'
       })
       .then(function(){showToast('Commande envoyée par email');resolve(true);})
-      .catch(function(e){console.error('EmailJS error:',e);fallbackEmail(orderData,total);resolve(false);});
+      .catch(function(e){console.error('EmailJS error:',e);alert('Erreur EmailJS: '+e.status+' - '+(e.text||'voir console'));fallbackEmail(orderData,total);resolve(false);});
     } else {
       fallbackEmail(orderData,total);
       resolve(false);
@@ -2536,8 +2536,25 @@ function sendOrderEmail(orderData) {
 }
 
 function fallbackEmail(orderData,total) {
-  var body = 'NOUVELLE COMMANDE\nClient: '+orderData.nom+' '+orderData.prenom+'\nTel: '+orderData.telephone+'\nTotal: '+total.toLocaleString()+' FCFA';
-  window.location.href = 'mailto:jspkite10@gmail.com?subject='+encodeURIComponent('Nouvelle commande Zone X')+'&body='+encodeURIComponent(body);
+  var body = 'NOUVELLE COMMANDE ZONE X\n';
+  body += 'Facture: '+(getInvoiceHTML(orderData).invoiceNumber)+'\n\n';
+  body += 'CLIENT\n';
+  body += 'Nom: '+orderData.nom+' '+orderData.prenom+'\n';
+  body += 'Tel: '+orderData.telephone+'\n';
+  body += 'Email: '+(orderData.email||'Non renseigné')+'\n';
+  body += 'Ville: '+orderData.ville+'\n';
+  body += 'Quartier: '+orderData.quartier+'\n';
+  body += 'Adresse: '+orderData.adresse+'\n';
+  body += 'Paiement: '+(orderData.paiement||'Non spécifié')+'\n';
+  body += 'Notes: '+(orderData.notes||'Aucune')+'\n\n';
+  body += 'ARTICLES COMMANDES\n';
+  (orderData.items||cart).forEach(function(item){
+    var product = products.find(function(p){return p.id===(item.id||item.productId);});
+    if (!product) return;
+    body += '- '+product.name+' x'+item.qty+' = '+(product.price*item.qty).toLocaleString()+' FCFA\n';
+  });
+  body += '\nTOTAL: '+total.toLocaleString()+' FCFA\n';
+  window.location.href = 'mailto:jspkite10@gmail.com?subject='+encodeURIComponent('Nouvelle commande Zone X #'+getInvoiceHTML(orderData).invoiceNumber)+'&body='+encodeURIComponent(body);
 }// ===== ANIMATIONS =====
 function initScrollReveal() {
   var els = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
