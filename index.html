@@ -2527,7 +2527,7 @@ function sendOrderEmail(orderData) {
         notes: orderData.notes||'Aucune'
       })
       .then(function(){showToast('Commande envoyée par email');resolve(true);})
-      .catch(function(e){console.error('EmailJS error:',e);alert('Erreur EmailJS: '+e.status+' - '+(e.text||'voir console'));fallbackEmail(orderData,total);resolve(false);});
+      .catch(function(e){console.error('EmailJS error:',e);fallbackEmail(orderData,total);resolve(false);});
     } else {
       fallbackEmail(orderData,total);
       resolve(false);
