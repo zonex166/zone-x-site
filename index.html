@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zone X - Boutique Érotique | Cameroun</title>
   <meta name="description" content="Zone X - Boutique érotique en ligne. Livraison partout au Cameroun. Découvrez notre sélection de produits pour adultes.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdnjs.cloudflare.com fonts.googleapis.com; font-src cdnjs.cloudflare.com fonts.gstatic.com fonts.googleapis.com; img-src 'self' data: https:; connect-src 'self' https://api.emailjs.com; frame-src 'none'; object-src 'none'">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2256,6 +2257,11 @@ function removeFromCart(productId) {
   renderCart();
 }
 
+function sanitize(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
+
 function updateQty(productId, delta) {
   var item = cart.find(function(i){return i.id===productId;});
   if (!item) return;
@@ -2778,16 +2784,17 @@ function attachCheckoutListeners() {
   form.addEventListener('submit', function(e){
     e.preventDefault();
     if (!form.checkValidity()) return;
+    var s = sanitize;
+    var f = function(id){return document.getElementById(id);};
+    var val = function(id){return s(f(id).value.trim());};
     var formData = {
-      nom: document.getElementById('nom').value.trim(),
-      prenom: document.getElementById('prenom').value.trim(),
-      telephone: document.getElementById('telephone').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      ville: document.getElementById('ville').value,
-      quartier: document.getElementById('quartier').value.trim(),
-      adresse: document.getElementById('adresse').value.trim()+', '+document.getElementById('quartier').value.trim(),
-      paiement: document.getElementById('paiement').value,
-      notes: document.getElementById('notes').value.trim(),
+      nom: val('nom'), prenom: val('prenom'),
+      telephone: val('telephone'), email: val('email'),
+      ville: s(f('ville').value),
+      quartier: val('quartier'),
+      adresse: val('adresse')+', '+val('quartier'),
+      paiement: s(f('paiement').value),
+      notes: val('notes'),
       items: JSON.parse(localStorage.getItem('zonex_cart'))||[]
     };
     sendOrderWhatsApp(formData);
@@ -2796,16 +2803,17 @@ function attachCheckoutListeners() {
   });
   document.getElementById('email-order-btn').addEventListener('click', async function(){
     if (!form.checkValidity()){form.reportValidity();return;}
+    var s = sanitize;
+    var f = function(id){return document.getElementById(id);};
+    var val = function(id){return s(f(id).value.trim());};
     var formData = {
-      nom: document.getElementById('nom').value.trim(),
-      prenom: document.getElementById('prenom').value.trim(),
-      telephone: document.getElementById('telephone').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      ville: document.getElementById('ville').value,
-      quartier: document.getElementById('quartier').value.trim(),
-      adresse: document.getElementById('adresse').value.trim()+', '+document.getElementById('quartier').value.trim(),
-      paiement: document.getElementById('paiement').value,
-      notes: document.getElementById('notes').value.trim(),
+      nom: val('nom'), prenom: val('prenom'),
+      telephone: val('telephone'), email: val('email'),
+      ville: s(f('ville').value),
+      quartier: val('quartier'),
+      adresse: val('adresse')+', '+val('quartier'),
+      paiement: s(f('paiement').value),
+      notes: val('notes'),
       items: JSON.parse(localStorage.getItem('zonex_cart'))||[]
     };
     var btn = document.getElementById('email-order-btn');
@@ -2818,16 +2826,17 @@ function attachCheckoutListeners() {
     btn.innerHTML = '<i class="fas fa-envelope"></i> Commander via Email';
   });
   document.getElementById('download-pdf-btn').addEventListener('click', function(){
+    var s = sanitize;
+    var f = function(id){return document.getElementById(id);};
+    var val = function(id){return s(f(id).value.trim())||'Non specifie';};
     var formData = {
-      nom: document.getElementById('nom').value.trim()||'Client',
-      prenom: document.getElementById('prenom').value.trim()||'',
-      telephone: document.getElementById('telephone').value.trim()||'Non renseigné',
-      email: document.getElementById('email').value.trim(),
-      ville: document.getElementById('ville').value||'Non spécifié',
-      quartier: document.getElementById('quartier').value.trim()||'',
-      adresse: (document.getElementById('adresse').value.trim()||'Non spécifié')+', '+(document.getElementById('quartier').value.trim()||''),
-      paiement: document.getElementById('paiement').value||'Non spécifié',
-      notes: document.getElementById('notes').value.trim(),
+      nom: val('nom')||'Client', prenom: val('prenom')||'',
+      telephone: val('telephone'), email: val('email'),
+      ville: s(f('ville').value)||'Non specifie',
+      quartier: val('quartier'),
+      adresse: (val('adresse')||'Non specifie')+', '+(val('quartier')||''),
+      paiement: s(f('paiement').value)||'Non specifie',
+      notes: val('notes'),
       items: JSON.parse(localStorage.getItem('zonex_cart'))||[]
     };
     downloadInvoicePDF(formData);
